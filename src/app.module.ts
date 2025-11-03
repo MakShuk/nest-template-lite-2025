@@ -4,9 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { getConfigModuleOptions } from './configs/config.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot(getConfigModuleOptions()),
-  ],
+  imports: [ConfigModule.forRoot(getConfigModuleOptions())],
   controllers: [],
   providers: [],
 })
