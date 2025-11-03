@@ -8,7 +8,7 @@ import { setupSwagger } from './setup/swagger.setup';
  * Основная функция запуска приложения
  */
 async function bootstrap(): Promise<void> {
-  const port = Number(process.env.BACKEND_PORT) || 5686;
+  const port = Number(process.env.PORT) || 5664;
 
   const app = await NestFactory.create(AppModule);
 
@@ -28,6 +28,12 @@ async function bootstrap(): Promise<void> {
   setupSwagger(app);
 
   await app.listen(port);
+
+  // Отображение информации о запуске
+  const baseUrl = `http://localhost:${port}`;
+  console.log(`🚀 Сервер запущен на порту: ${port}`);
+  console.log(`📖 Документация Swagger доступна по адресу: ${baseUrl}/api`);
+  console.log(`🌐 Базовый URL API: ${baseUrl}`);
 }
 
 bootstrap();
