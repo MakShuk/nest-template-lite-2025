@@ -1,0 +1,16 @@
+# docker-compose.yml
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5686:5686"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+    env_file:
+      - ./envs/.env.production
+    restart: unless-stopped
+

@@ -1,0 +1,58 @@
+{
+  // Основные настройки компилятора TypeScript
+  "compilerOptions": {
+    // Определяет систему модулей (commonjs для Node.js)
+    "module": "commonjs",
+    // Генерирует .d.ts файлы с объявлениями типов
+    "declaration": true,
+    // Включает генерацию source map файлов для отладки
+    "sourceMap": true,
+    // Удаляет комментарии из скомпилированного кода для оптимизации
+    "removeComments": true,
+    // Необходимо для работы декораторов NestJS
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    // Позволяет использовать импорты по умолчанию из модулей без экспортов по умолчанию
+    "allowSyntheticDefaultImports": true,
+    // Целевая версия ECMAScript
+    "target": "ES2022",
+    // Директория для скомпилированных файлов
+    "outDir": "./dist",
+    // Базовый путь для резолва модулей
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": [
+        "*"
+      ]
+    },
+    // Включает инкрементальную компиляцию для ускорения сборки
+    "incremental": true,
+    // Пропускает проверку типов в node_modules
+    "skipLibCheck": true,
+    // Улучшенные настройки проверки типов
+    "strict": true, // Включает все строгие проверки типов
+    // Дополнительные проверки кода
+    "noUnusedLocals": true, // Проверка неиспользуемых локальных переменных
+    "noUnusedParameters": true, // Проверка неиспользуемых параметров
+    "noImplicitReturns": true, // Проверка всех веток return в функциях
+    "noFallthroughCasesInSwitch": true, // Проверка fall-through cases в switch
+    "forceConsistentCasingInFileNames": true, // Проверка регистра в именах файлов
+    // Дополнительные настройки модулей
+    "moduleResolution": "node", // Стратегия разрешения модулей
+    "esModuleInterop": true, // Улучшенная совместимость с ES модулями
+    // Поддержка JSON модулей
+    "resolveJsonModule": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
+  },
+  // Включаем только необходимые файлы
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "**/*spec.ts"
+  ]
+}

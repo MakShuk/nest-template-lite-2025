@@ -1,0 +1,28 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "**/*e2e-spec.ts", "**/*.mock.ts", "node_modules"],
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    // Оптимизация размера
+    "sourceMap": false,
+    "removeComments": true,
+    "importHelpers": true,
+    "preserveConstEnums": false, // ⚠️ изменено
+
+    // Производительность сборки
+    "incremental": true, // ⚠️ изменено
+    "tsBuildInfoFile": "./dist/.tsbuildinfo", // ⚠️ добавлено
+
+    // Генерация типов
+    "declaration": true,
+    "declarationMap": false,
+    "emitDeclarationOnly": false, // ⚠️ добавлено явно
+
+    // Безопасность
+    "noEmitOnError": true,
+
+    // Дополнительные оптимизации
+    "skipLibCheck": true, // ⚠️ добавлено - ускоряет сборку
+    "forceConsistentCasingInFileNames": true // ⚠️ добавлено
+  }
+}
