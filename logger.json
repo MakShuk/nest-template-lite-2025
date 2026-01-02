@@ -1,0 +1,122 @@
+{
+  "prompt_purpose": "Спроектировать и описать реализацию системы логирования в NestJS по паттернам из предоставленного документа, адаптировав под встроенный NestJS Logger и экспорт логов в Grafana Loki, с поддержкой correlationId/requestId.",
+  "input_context": {
+    "source_doc": "PATTERNY_LOGIROVANIIa.md",
+    "key_patterns_to_adapt": [
+      "Категории логгеров по подсистемам и управление уровнями через ENV",
+      "Стандартный префикс сообщений вида [ModuleName][methodName]",
+      "Структурированное логирование: message + context object (без ручного JSON.stringify)",
+      "Уровни: info для бизнес-событий, warn для ожидаемых проблем, error для сбоев, debug/trace для диагностики",
+      "Утилита логирования ошибок с нормализацией (error_name, error_message, error_stack) + бизнес-контекст",
+      "Паттерны логирования для job-систем (BullMQ): старт/шаги/итог/ошибка + uuid/type/attempt/queue/duration",
+      "TEST LOGGING и DIAGNOSTIC логирование через debug и маркеры"
+    ]
+  },
+  "target_stack": {
+    "framework": "NestJS",
+    "logger_base": "Встроенный NestJS Logger (ConsoleLogger / LoggerService)",
+    "observability": {
+      "centralized_logging": "Grafana Loki",
+      "distributed_tracing_fields": ["correlationId", "requestId"]
+    },
+    "architecture_requirements": [
+      "Интеграция с dependency injection: логгер не создаётся через new Logger(), а внедряется через DI",
+      "LoggerModule как Global module",
+      "Фабрика/провайдер для категоризированных логгеров (по модулю/подсистеме)",
+      "Декоратор для удобного получения логгера в классах",
+      "Interceptor для авто-логирования HTTP запросов/ответов",
+      "ExceptionFilter для унифицированного логирования ошибок",
+      "Механизм корреляции (requestId/correlationId) на весь жизненный цикл запроса"
+    ]
+  },
+  "deliverables": {
+    "what_to_generate": [
+      "Архитектурное описание: какие NestJS сущности нужны (module/providers/decorator/interceptor/filter/middleware)",
+      "Рекомендованная структура файлов/папок",
+      "Интерфейсы и минимальные примеры кода TypeScript (скелеты классов) для каждого компонента",
+      "Правила именования категорий (аналог log4js categories) и пример карты категорий",
+      "Схема формата лога: обязательные поля и как они будут попадать в Loki",
+      "Примеры использования в Controller/Service/Job processor",
+      "ENV-переменные для управления уровнями по категориям и общими настройками"
+    ],
+    "format_constraints": {
+      "language": "ru",
+      "code_language": "TypeScript",
+      "style": "Короткие, практичные фрагменты. Не писать длинные полотна кода."
+    }
+  },
+  "implementation_details_to_include": {
+    "logger_design": {
+      "custom_logger_service": {
+        "goal": "Сделать CustomLoggerService, совместимый с Nest LoggerService, который добавляет: category, prefix, correlationId/requestId, структурированный context объект.",
+        "notes": [
+          "Использовать setContext()/контекст класса, но дополнить категорией подсистемы.",
+          "Не логировать секреты и чувствительные данные."
+        ]
+      },
+      "category_factory_provider": {
+        "goal": "Сделать фабрику, возвращающую 'категоризированный' логгер, чтобы в сервисах было: private logger = injectCategoryLogger('wbFetch') или через декоратор."
+      },
+      "decorator": {
+        "name": "@InjectLogger",
+        "goal": "Декоратор, который внедряет логгер с заданной категорией и (опционально) автоматически ставит context = имя класса."
+      }
+    },
+    "http_logging": {
+      "interceptor": {
+        "goal": "Логировать входящий HTTP запрос и исходящий ответ/ошибку с полями: method, url, statusCode, durationMs, requestId, correlationId, userId (если доступно), ip.",
+        "levels": {
+          "success": "info",
+          "client_errors_4xx": "warn (по правилам, если ожидаемо)",
+          "server_errors_5xx": "error"
+        }
+      },
+      "request_context_propagation": {
+        "preferred_approach": "AsyncLocalStorage для хранения request-scoped контекста (requestId/correlationId) доступного из любых сервисов в рамках запроса.",
+        "must_include": [
+          "Где генерируется requestId/correlationId (middleware/guard/interceptor)",
+          "Как извлекается из входящих заголовков (например X-Request-Id) и как генерируется если нет",
+          "Как CustomLoggerService добавляет эти поля в каждый лог"
+        ]
+      }
+    },
+    "error_logging": {
+      "exception_filter": {
+        "goal": "Единая точка логирования непредвиденных исключений + маппинг на безопасный HTTP ответ.",
+        "rules": [
+          "Ожидаемые доменные ошибки можно не логировать как error (по аналогии с ApiError в документе), но фиксировать на warn при необходимости.",
+          "Неожиданные ошибки логировать с error_name/error_message/error_stack + request context."
+        ]
+      },
+      "error_utils": {
+        "goal": "Утилита normalizeError/getErrorInfo и logErrorWithContext, как в документе, но на TypeScript и под NestJS."
+      }
+    },
+    "loki_export": {
+      "goal": "Описать, как отправлять логи в Grafana Loki (формат JSON, метки/labels), и какие поля сделать labels vs fields.",
+      "must_include": [
+        "Рекомендации по структуре JSON лога для Loki (timestamp, level, category, context, message, requestId, correlationId, extra)",
+        "Какие ENV нужны для Loki endpoint/auth и для уровней логирования"
+      ]
+    },
+    "jobs_logging": {
+      "goal": "Паттерн логирования BullMQ job: prefix вида [job][uuidShort][type][attempt=N] + summary по завершению.",
+      "must_include": [
+        "Какие поля писать в контекст (queueName, jobId, attemptsMade, durationMs, counts)",
+        "Как использовать тот же correlationId (если job инициирован HTTP запросом — передавать correlationId в data)"
+      ]
+    },
+    "test_diagnostic_logging": {
+      "goal": "Правила для TEST LOGGING и DIAGNOSTIC логов: всегда debug, маркеры 'TEST LOGGING:'/'DIAGNOSTIC:' и требование удалить после отладки."
+    }
+  },
+  "acceptance_criteria": [
+    "В решении есть Global LoggerModule и DI-внедрение логгера в сервисы/контроллеры",
+    "Есть декоратор для удобного инжекта категоризированного логгера",
+    "Есть HTTP Logging Interceptor и Exception Filter с единым форматом логов",
+    "Есть AsyncLocalStorage (или эквивалент) для requestId/correlationId на весь запрос",
+    "Описан экспорт логов в Grafana Loki и формат JSON лога",
+    "Примеры использования соответствуют стилю из документа: prefix + message + context object"
+  ],
+  "final_user_request_to_chatgpt": "Сгенерируй дизайн и минимальные примеры реализации системы логирования в NestJS по правилам из PATTERNY_LOGIROVANIIa.md, но с использованием встроенного NestJS Logger через DI, с категоризацией логгеров, декоратором для инжекта, HTTP interceptor, exception filter, AsyncLocalStorage для requestId/correlationId и подготовкой логов для отправки в Grafana Loki. Дай структуру файлов, примеры кода TypeScript и список ENV переменных."
+}

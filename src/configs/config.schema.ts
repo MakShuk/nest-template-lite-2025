@@ -16,4 +16,8 @@ export const configValidationSchema = Joi.object({
   ENABLE_SWAGGER: Joi.boolean()
     .default(ENV_VALUES.DEFAULT_VALUES.ENABLE_SWAGGER)
     .description('Enable Swagger documentation'),
+
+  ENABLE_REQUEST_LOGGING: Joi.boolean()
+    .default(ENV_VALUES.DEFAULT_VALUES.ENABLE_REQUEST_LOGGING)
+    .description('Enable HTTP request/response logging'),
 });
