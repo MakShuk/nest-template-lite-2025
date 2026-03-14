@@ -12,19 +12,20 @@ export class ExampleController {
 
   @Get()
   getExample(): { message: string } {
-    this.logger.log('Пример логирования info уровня', { userId: 123, action: 'getExample' });
-    this.logger.debug('Отладочная информация', { debugData: { nested: { value: 42 } } });
-    this.logger.warn('Предупреждение о чем-то', { warningCode: 'EXAMPLE_001' });
+    this.logger.log('РџСЂРёРјРµСЂ Р»РѕРіРёСЂРѕРІР°РЅРёСЏ info СѓСЂРѕРІРЅСЏ', { userId: 123, action: 'getExample' });
+    this.logger.debug('РћС‚Р»Р°РґРѕС‡РЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ', { debugData: { nested: { value: 42 } } });
+    this.logger.warn('РџСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ Рѕ С‡РµРј-С‚Рѕ', { warningCode: 'EXAMPLE_001' });
 
     return { message: 'Hello from ExampleController!' };
   }
 
   @Get('error')
   getErrorExample(): void {
-    this.logger.error('Пример логирования ошибки', 'stack-trace-here', {
+    this.logger.error('РџСЂРёРјРµСЂ Р»РѕРіРёСЂРѕРІР°РЅРёСЏ РѕС€РёР±РєРё', 'stack-trace-here', {
       errorContext: { field: 'value' },
     });
 
-    throw new Error('Это пример исключения');
+    throw new Error('Р­С‚Рѕ РїСЂРёРјРµСЂ РёСЃРєР»СЋС‡РµРЅРёСЏ');
   }
 }
+

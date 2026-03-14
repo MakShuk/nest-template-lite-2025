@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+﻿import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { getConfigModuleOptions } from './configs/config.module';
@@ -20,3 +20,4 @@ export class AppModule implements NestModule {
     consumer.apply(CorrelationMiddleware).forRoutes('*');
   }
 }
+

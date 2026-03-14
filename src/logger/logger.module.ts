@@ -23,16 +23,7 @@ import {
 import { NextFunction, Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
-export interface CreateLoggerOptions {
-  category: string;
-  context?: string;
-}
-
-export interface RequestContext {
-  correlationId: string;
-  requestId?: string | undefined;
-}
+import { CreateLoggerOptions, RequestContext } from './logger.types';
 
 export const LOGGER_TOKEN = (
   category: string,
