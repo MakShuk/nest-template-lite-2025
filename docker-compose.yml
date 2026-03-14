@@ -7,10 +7,11 @@ services:
     ports:
       - "5686:5686"
     environment:
+      - PORT=5686
       - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - JWT_SECRET=${JWT_SECRET}
-    env_file:
-      - ./envs/.env.production
+    labels:
+      app: nestjs
+      env: test
+      team: backend
+      service: nest-template-lite-2025
     restart: unless-stopped
-
