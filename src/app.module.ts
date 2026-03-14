@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { getConfigModuleOptions } from './configs/config.module';
 import { ExampleController } from './example.controller';
+import { HelloCommand } from './hello.command';
 import { LoggerModule } from './logger/logger.module';
 import { CorrelationMiddleware, GlobalExceptionFilter, HttpLoggingInterceptor } from './logger/logger.module';
 
@@ -10,6 +11,7 @@ import { CorrelationMiddleware, GlobalExceptionFilter, HttpLoggingInterceptor } 
   imports: [ConfigModule.forRoot(getConfigModuleOptions()), LoggerModule],
   controllers: [ExampleController],
   providers: [
+    HelloCommand,
     GlobalExceptionFilter,
     HttpLoggingInterceptor,
     LoggerModule.registerLogger({ category: 'ExampleModule', context: 'ExampleController' }),

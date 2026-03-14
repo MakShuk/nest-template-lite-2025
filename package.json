@@ -23,6 +23,8 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "cli": "node dist/cli",
+    "cli:dev": "ts-node src/cli.ts",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "format": "biome format .",
@@ -39,6 +41,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "joi": "^18.0.1",
+    "nest-commander": "^3.20.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "swagger-ui-express": "^5.0.1"
@@ -51,6 +54,7 @@
     "@swc/core": "^1.13.5",
     "@types/express": "^5.0.3",
     "@types/node": "^24.9.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
 }
