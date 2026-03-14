@@ -4,6 +4,7 @@ export const ENV_VALUES = {
     PRODUCTION: 'production',
   },
   DEFAULT_VALUES: {
+    APP_NAME: 'CLI',
     PORT: 3000,
     NODE_ENV: 'development',
     ENABLE_SWAGGER: true,

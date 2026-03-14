@@ -1,10 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
-import type { CustomLoggerService } from './custom-logger.service';
-import { InjectLogger } from './logger.decorator';
+﻿import { Controller, Get } from '@nestjs/common';
 
-/**
- * Пример контроллера с использованием категоризированного логгера
- */
+import type { CustomLoggerService } from './logger/logger.module';
+import { InjectLogger } from './logger/logger.module';
+
 @Controller('example')
 export class ExampleController {
   constructor(
@@ -15,9 +13,7 @@ export class ExampleController {
   @Get()
   getExample(): { message: string } {
     this.logger.log('Пример логирования info уровня', { userId: 123, action: 'getExample' });
-
     this.logger.debug('Отладочная информация', { debugData: { nested: { value: 42 } } });
-
     this.logger.warn('Предупреждение о чем-то', { warningCode: 'EXAMPLE_001' });
 
     return { message: 'Hello from ExampleController!' };

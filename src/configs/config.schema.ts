@@ -3,6 +3,12 @@ import * as Joi from 'joi';
 import { ENV_VALUES } from './constants';
 
 export const configValidationSchema = Joi.object({
+  APP_NAME: Joi.string()
+    .trim()
+    .min(1)
+    .default(ENV_VALUES.DEFAULT_VALUES.APP_NAME)
+    .description('Application name for log prefix'),
+
   PORT: Joi.number()
     .port()
     .default(ENV_VALUES.DEFAULT_VALUES.PORT)

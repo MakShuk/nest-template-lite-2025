@@ -2,11 +2,9 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { getConfigModuleOptions } from './configs/config.module';
-import { LoggerModule } from './logger';
-import { CorrelationMiddleware } from './logger/correlation.middleware';
-import { ExampleController } from './logger/example.controller';
-import { GlobalExceptionFilter } from './logger/global-exception.filter';
-import { HttpLoggingInterceptor } from './logger/http-logging.interceptor';
+import { ExampleController } from './example.controller';
+import { LoggerModule } from './logger/logger.module';
+import { CorrelationMiddleware, GlobalExceptionFilter, HttpLoggingInterceptor } from './logger/logger.module';
 
 @Module({
   imports: [ConfigModule.forRoot(getConfigModuleOptions()), LoggerModule],
