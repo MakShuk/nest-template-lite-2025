@@ -21,6 +21,8 @@ lerna-debug.log*
 .env.local
 .env.*.local
 .env.*
+!.env.example
+!envs/.env.example
 
 # IDE - VSCode
 .vscode/

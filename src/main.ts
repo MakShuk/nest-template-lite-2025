@@ -1,19 +1,20 @@
-﻿import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
-import { setupSwagger } from './setup/swagger.setup';
+import { AppConfigService } from './configs/config.service';
 import {
   CustomLoggerService,
   GlobalExceptionFilter,
   HttpLoggingInterceptor,
   RequestContextProvider,
 } from './logger/logger.module';
+import { setupSwagger } from './setup/swagger.setup';
 
 async function bootstrap(): Promise<void> {
-  const port = Number(process.env.PORT) || 5664;
-
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const appConfigService = app.get(AppConfigService);
+  const port = appConfigService.port;
   const requestContextProvider = app.get(RequestContextProvider);
 
   const appLogger = new CustomLoggerService(
@@ -37,13 +38,13 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  if (process.env.ENABLE_REQUEST_LOGGING === 'true') {
+  if (appConfigService.enableRequestLogging) {
     app.useGlobalInterceptors(new HttpLoggingInterceptor(requestContextProvider));
   }
 
   app.useGlobalFilters(new GlobalExceptionFilter(requestContextProvider));
 
-  setupSwagger(app);
+  setupSwagger(app, appConfigService);
 
   await app.listen(port);
 
@@ -53,4 +54,3 @@ async function bootstrap(): Promise<void> {
 }
 
 bootstrap();
-
