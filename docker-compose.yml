@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - ./envs/.env.production
     ports:
       - "5686:5686"
     environment:
