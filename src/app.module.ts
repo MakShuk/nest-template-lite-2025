@@ -10,14 +10,12 @@ import {
   LoggerModule,
 } from "./logger/logger.module";
 import { SendMessageCommand } from "./send-message.command";
-import { TelegramModule } from "./telegram/telegram.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot(getConfigModuleOptions()),
     AppConfigModule,
     LoggerModule,
-    TelegramModule,
   ],
   controllers: [],
   providers: [

@@ -26,16 +26,4 @@ export const configValidationSchema = Joi.object({
   ENABLE_REQUEST_LOGGING: Joi.boolean()
     .default(ENV_VALUES.DEFAULT_VALUES.ENABLE_REQUEST_LOGGING)
     .description('Enable HTTP request/response logging'),
-
-  TELEGRAM_BOT_TOKEN: Joi.string()
-    .trim()
-    .min(1)
-    .default(ENV_VALUES.DEFAULT_VALUES.TELEGRAM_BOT_TOKEN)
-    .description('Telegram bot token'),
-
-  TELEGRAM_DEFAULT_USER: Joi.string()
-    .trim()
-    .min(1)
-    .default(ENV_VALUES.DEFAULT_VALUES.TELEGRAM_DEFAULT_USER)
-    .description('Default Telegram user or chat id'),
 });

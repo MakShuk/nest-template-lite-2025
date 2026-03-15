@@ -4,7 +4,7 @@ export const ENV_VALUES = {
     PRODUCTION: 'production',
   },
   DEFAULT_VALUES: {
-    APP_NAME: 'nest-cli-tg',
+    APP_NAME: 'nest-cli-lite',
     PORT: 3424,
     NODE_ENV: 'development',
     ENABLE_SWAGGER: true,

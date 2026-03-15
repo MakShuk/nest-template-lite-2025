@@ -43,22 +43,4 @@ export class AppConfigService {
       ENV_VALUES.DEFAULT_VALUES.ENABLE_REQUEST_LOGGING
     );
   }
-
-  get telegramBotToken(): string {
-    return this.getRequiredString("TELEGRAM_BOT_TOKEN");
-  }
-
-  get telegramDefaultUser(): string {
-    return this.getRequiredString("TELEGRAM_DEFAULT_USER");
-  }
-
-  private getRequiredString(key: string, fallback = ""): string {
-    const value =
-      this.configService.get<string>(key)?.trim() ?? fallback.trim();
-    if (!value) {
-      throw new Error(`Missing required environment variable: ${key}`);
-    }
-
-    return value;
-  }
 }
