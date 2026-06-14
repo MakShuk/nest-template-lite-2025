@@ -17,16 +17,19 @@ FROM node:24-alpine AS production
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV BACKEND_PORT=5686
+ENV PORT=3424
 
 # Install only production dependencies
 COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Copy runtime artifacts
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/envs ./envs
 
-EXPOSE ${BACKEND_PORT}
+# Run as the unprivileged user that the base image already provides
+USER node
+
+EXPOSE 3424
 
 CMD ["npm", "run", "start:prod"]

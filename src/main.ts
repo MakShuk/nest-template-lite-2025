@@ -9,6 +9,7 @@ import {
   HttpLoggingInterceptor,
   RequestContextProvider,
 } from './logger/logger.module';
+import { setupCors } from './setup/cors.setup';
 import { setupSwagger } from './setup/swagger.setup';
 
 async function bootstrap(): Promise<void> {
@@ -44,13 +45,21 @@ async function bootstrap(): Promise<void> {
 
   app.useGlobalFilters(new GlobalExceptionFilter(requestContextProvider));
 
+  setupCors(app, appConfigService);
   setupSwagger(app, appConfigService);
 
   await app.listen(port);
 
   appLogger.log(`server started on port=${port}`);
-  appLogger.log(`swagger available at http://localhost:${port}/api`);
   appLogger.log(`api base url http://localhost:${port}`);
+  if (appConfigService.enableSwagger || appConfigService.nodeEnv === 'development') {
+    appLogger.log(`swagger available at http://localhost:${port}/api`);
+  }
 }
 
-bootstrap();
+bootstrap().catch(error => {
+  process.stderr.write(
+    `Failed to bootstrap application: ${error instanceof Error ? error.stack : error}\n`,
+  );
+  process.exit(1);
+});

@@ -9,13 +9,13 @@ import {
   Global,
   HttpException,
   HttpStatus,
-  Injectable,
   Inject,
+  Injectable,
   InjectionToken,
   Logger,
-  LoggerService as NestLoggerService,
   Module,
   NestInterceptor,
+  LoggerService as NestLoggerService,
   NestMiddleware,
   Provider,
   Scope,
@@ -177,7 +177,8 @@ export class CustomLoggerService implements NestLoggerService {
 
     const plainPrefix = `[${this.appName}][${this.formatTimestamp()}] ${levelBlock} ${category} -`;
     const color = this.levelColors[level];
-    const coloredPrefix = this.useColors && color ? `${color}${plainPrefix}${this.reset}` : plainPrefix;
+    const coloredPrefix =
+      this.useColors && color ? `${color}${plainPrefix}${this.reset}` : plainPrefix;
     const line = `${coloredPrefix} ${payload}`;
 
     const stream = level === 'ERROR' ? process.stderr : process.stdout;

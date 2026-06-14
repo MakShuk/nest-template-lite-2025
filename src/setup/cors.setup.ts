@@ -1,12 +1,10 @@
 import { type INestApplication, Logger } from '@nestjs/common';
 
-export function setupCors(app: INestApplication): void {
+import { AppConfigService } from '../configs/config.service';
+
+export function setupCors(app: INestApplication, appConfigService: AppConfigService): void {
   const logger = new Logger('cors');
-  const rawAllowedOrigins = process.env.ALLOWED_ORIGINS ?? '';
-  const allowedOrigins = rawAllowedOrigins
-    .split(',')
-    .map(origin => origin.trim())
-    .filter(Boolean);
+  const allowedOrigins = appConfigService.allowedOrigins;
 
   logger.debug(`config allowedOrigins=${JSON.stringify(allowedOrigins)}`);
 

@@ -26,4 +26,9 @@ export const configValidationSchema = Joi.object({
   ENABLE_REQUEST_LOGGING: Joi.boolean()
     .default(ENV_VALUES.DEFAULT_VALUES.ENABLE_REQUEST_LOGGING)
     .description('Enable HTTP request/response logging'),
+
+  ALLOWED_ORIGINS: Joi.string()
+    .allow('')
+    .default(ENV_VALUES.DEFAULT_VALUES.ALLOWED_ORIGINS)
+    .description('Comma-separated list of allowed CORS origins (empty allows all)'),
 });

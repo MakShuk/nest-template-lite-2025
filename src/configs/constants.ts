@@ -9,5 +9,6 @@ export const ENV_VALUES = {
     NODE_ENV: 'development',
     ENABLE_SWAGGER: true,
     ENABLE_REQUEST_LOGGING: true,
+    ALLOWED_ORIGINS: '',
   },
 } as const;

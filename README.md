@@ -1,81 +1,110 @@
-# AI Proxy - NestJS Starter Template
+# NestJS Starter Template (lite)
 
-Стартовый шаблон для NestJS приложений с TypeScript, настроенный с использованием лучших практик разработки.
+Стартовый шаблон для NestJS-приложений на TypeScript с готовыми лучшими практиками:
+структурированный логгер с correlation id, глобальная валидация, конфигурация через Joi,
+Swagger, CORS, поддержка CLI-команд и Docker.
 
-## 🚀 Основные технологии
+## 🚀 Технологии
 
-- **NestJS** v11.1.6 - Progressive Node.js framework
-- **TypeScript** v5.9.3 - Строгая типизация
-- **Swagger/OpenAPI** - Автоматическая документация API
-- **Joi** - Валидация конфигурации
-- **Class Validator & Transformer** - Валидация и трансформация DTO
-- **Docker** - Контейнеризация приложения
+- **NestJS** 11 — Progressive Node.js framework
+- **TypeScript** 5.9 — строгая типизация (`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
+- **Biome** 2 — линтер и форматтер
+- **Joi** — валидация переменных окружения
+- **Swagger / OpenAPI** — автоматическая документация API
+- **class-validator / class-transformer** — валидация и трансформация DTO
+- **nest-commander** — CLI-команды
+- **Docker** — контейнеризация приложения
 
 ## 📋 Требования
 
-- Node.js >= 2.0.0
-- npm >= 9.0.0
+- Node.js >= 24
+- npm >= 10
 
 ## 🛠️ Установка
 
 ```bash
-# Установка зависимостей
 npm install
+cp envs/.env.example envs/.env.development
 ```
 
-## 🏃 Запуск приложения
+## 🏃 Запуск
 
 ```bash
-# Development mode
+# Разработка (watch)
 npm run start:dev
 
-# Production mode
+# Production
 npm run build
 npm run start:prod
 
-# Debug mode
-npm start:debug
+# Debug
+npm run start:debug
+```
+
+## 🖥️ CLI
+
+CLI собирается из того же `AppModule` через `nest-commander`.
+
+```bash
+# Из исходников
+npm run cli:dev -- send-message
+
+# Из сборки
+npm run build
+npm run cli -- send-message
+```
+
+`send-message` — пример команды (см. `src/send-message.command.ts`), на её основе
+создаются собственные команды.
+
+## 🧹 Линтинг и форматирование
+
+```bash
+npm run check       # линт + формат (проверка)
+npm run check:fix   # автоисправление
+npm run lint        # только линт
+npm run format      # только формат
 ```
 
 ## 🐳 Docker
 
 ```bash
-# Запуск с помощью Docker Compose
-docker-compose up -d
+docker-compose up -d --build
 ```
+
+Образ собирается многоступенчато (build → production), запускается под непривилегированным
+пользователем `node`. Файл `envs/.env.production` опционален: при его отсутствии используются
+значения из `environment` в `docker-compose.yml` и значения по умолчанию из кода.
+
+## ⚙️ Конфигурация
+
+Переменные окружения загружаются из `envs/.env.${NODE_ENV}` и валидируются схемой Joi
+(`src/configs/config.schema.ts`). Значения по умолчанию — в `src/configs/constants.ts`.
+
+| Переменная               | По умолчанию    | Описание                                                       |
+| ------------------------ | --------------- | ------------------------------------------------------------- |
+| `APP_NAME`               | `nest-cli-lite` | Имя приложения (используется в логах и заголовке Swagger)     |
+| `PORT`                   | `3424`          | Порт HTTP-сервера                                             |
+| `NODE_ENV`               | `development`   | `development` \| `production`                                 |
+| `ENABLE_SWAGGER`         | `true`          | Включить Swagger (в `development` включён всегда)             |
+| `ENABLE_REQUEST_LOGGING` | `true`          | Логировать HTTP-запросы/ответы                               |
+| `ALLOWED_ORIGINS`        | _(пусто)_       | Список origin'ов CORS через запятую; пусто — разрешить все    |
+
+Swagger доступен по адресу `http://localhost:${PORT}/api`.
 
 ## 📁 Структура проекта
 
 ```
-ai-proxy/
-├── src/
-│   ├── configs/          # Конфигурация приложения
-│   ├── setup/            # Настройки (CORS, Swagger, Logging)
-│   ├── app.module.ts     # Корневой модуль
-│   └── main.ts           # Точка входа
-├── envs/                 # Файлы окружения
-├── .kilocode/            # Правила для AI ассистента
-└── docker-compose.yml    # Docker конфигурация
+src/
+├── configs/          # Конфигурация (Joi-схема, AppConfigService, константы)
+├── logger/           # Логгер с correlation id, интерцептор и exception-фильтр
+├── setup/            # Настройка CORS и Swagger
+├── send-message.command.ts  # Пример CLI-команды
+├── app.module.ts     # Корневой модуль
+├── main.ts           # HTTP entrypoint
+└── cli.ts            # CLI entrypoint
+envs/                 # Файлы окружения (.env.example в репозитории)
 ```
-
-## ⚙️ Конфигурация
-
-Переменные окружения настраиваются через файлы в директории `envs/`:
-- `.env.development` - для разработки
-- `.env.production` - для продакшена
-- `.env.example` - пример конфигурации
-
-Основные переменные:
-- `BACKEND_PORT` - порт приложения (по умолчанию: 5686)
-
-## 🔧 Особенности
-
-- ✅ Глобальная валидация с автоматической трансформацией типов
-- ✅ Swagger документация из коробки
-- ✅ Строгая конфигурация TypeScript
-- ✅ Поддержка алиасов путей (@/*)
-- ✅ Docker готовность
-- ✅ Настроенный .gitignore
 
 ## 📝 Лицензия
 
