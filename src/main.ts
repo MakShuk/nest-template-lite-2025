@@ -1,58 +1,26 @@
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from './app.module';
 import { AppConfigService } from './configs/config.service';
-import {
-  CustomLoggerService,
-  GlobalExceptionFilter,
-  HttpLoggingInterceptor,
-  RequestContextProvider,
-} from './logger/logger.module';
-import { setupCors } from './setup/cors.setup';
-import { setupSwagger } from './setup/swagger.setup';
+import { APPLICATION_LOGGER, type CustomLoggerService } from './logger/logger.module';
+import { setupApplication } from './setup/application.setup';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { bufferLogs: true });
   const appConfigService = app.get(AppConfigService);
   const port = appConfigService.port;
-  const requestContextProvider = app.get(RequestContextProvider);
-
-  const appLogger = new CustomLoggerService(
-    {
-      category: 'application',
-      context: 'bootstrap',
-    },
-    requestContextProvider,
-  );
+  const appLogger = app.get<CustomLoggerService>(APPLICATION_LOGGER);
 
   app.useLogger(appLogger);
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
-
-  if (appConfigService.enableRequestLogging) {
-    app.useGlobalInterceptors(new HttpLoggingInterceptor(requestContextProvider));
-  }
-
-  app.useGlobalFilters(new GlobalExceptionFilter(requestContextProvider));
-
-  setupCors(app, appConfigService);
-  setupSwagger(app, appConfigService);
+  app.enableShutdownHooks();
+  setupApplication(app, appConfigService);
 
   await app.listen(port);
 
   appLogger.log(`server started on port=${port}`);
   appLogger.log(`api base url http://localhost:${port}`);
-  if (appConfigService.enableSwagger || appConfigService.nodeEnv === 'development') {
+  if (appConfigService.enableSwagger) {
     appLogger.log(`swagger available at http://localhost:${port}/api`);
   }
 }

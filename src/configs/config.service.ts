@@ -1,54 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { ENV_VALUES } from './constants';
+import type { EnvironmentVariables } from './config.schema';
+import type { ENV_VALUES } from './constants';
 
 type NodeEnvironment =
   (typeof ENV_VALUES.NODE_ENVIRONMENTS)[keyof typeof ENV_VALUES.NODE_ENVIRONMENTS];
 
 @Injectable()
 export class AppConfigService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @Inject(ConfigService)
+    private readonly configService: ConfigService<EnvironmentVariables, true>,
+  ) {}
 
   get projectName(): string {
-    const appName = this.configService.get<string>('APP_NAME')?.trim();
-    if (appName) {
-      return appName;
-    }
-
-    return ENV_VALUES.DEFAULT_VALUES.APP_NAME;
+    return this.configService.get('APP_NAME', { infer: true });
   }
 
   get port(): number {
-    return this.configService.get<number>('PORT') ?? ENV_VALUES.DEFAULT_VALUES.PORT;
+    return this.configService.get('PORT', { infer: true });
   }
 
   get nodeEnv(): NodeEnvironment {
-    const nodeEnv = this.configService.get<NodeEnvironment>('NODE_ENV');
-    return nodeEnv ?? ENV_VALUES.DEFAULT_VALUES.NODE_ENV;
+    return this.configService.get('NODE_ENV', { infer: true });
   }
 
   get enableSwagger(): boolean {
-    return (
-      this.configService.get<boolean>('ENABLE_SWAGGER') ?? ENV_VALUES.DEFAULT_VALUES.ENABLE_SWAGGER
-    );
+    return this.configService.get('ENABLE_SWAGGER', { infer: true });
   }
 
   get enableRequestLogging(): boolean {
-    return (
-      this.configService.get<boolean>('ENABLE_REQUEST_LOGGING') ??
-      ENV_VALUES.DEFAULT_VALUES.ENABLE_REQUEST_LOGGING
-    );
+    return this.configService.get('ENABLE_REQUEST_LOGGING', { infer: true });
   }
 
   get allowedOrigins(): string[] {
-    const raw =
-      this.configService.get<string>('ALLOWED_ORIGINS') ??
-      ENV_VALUES.DEFAULT_VALUES.ALLOWED_ORIGINS;
+    const raw = this.configService.get('ALLOWED_ORIGINS', { infer: true });
 
     return raw
       .split(',')
       .map(origin => origin.trim())
       .filter(Boolean);
+  }
+
+  get corsCredentials(): boolean {
+    return this.configService.get('CORS_CREDENTIALS', { infer: true });
   }
 }

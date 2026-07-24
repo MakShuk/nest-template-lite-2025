@@ -1,28 +1,15 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["**/*.spec.ts", "**/*.test.ts", "**/*e2e-spec.ts", "**/*.mock.ts", "node_modules"],
   "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*.spec.ts", "**/*.test.ts", "**/*.mock.ts"],
   "compilerOptions": {
-    // Optimize output size
     "sourceMap": false,
     "removeComments": true,
-    "importHelpers": true,
-    "preserveConstEnums": false,
-
-    // Faster incremental builds
     "incremental": true,
     "tsBuildInfoFile": "./dist/.tsbuildinfo",
-
-    // Type declaration generation
     "declaration": true,
     "declarationMap": false,
     "emitDeclarationOnly": false,
-
-    // Fail the build on any type error
-    "noEmitOnError": true,
-
-    // Skip type-checking of dependency declaration files to speed up builds
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "noEmitOnError": true
   }
 }

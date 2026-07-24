@@ -3,11 +3,14 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "builder": "swc",
+    "builder": {
+      "type": "swc",
+      "options": {
+        "stripLeadingPaths": true
+      }
+    },
     "typeCheck": true,
-    "deleteOutDir": true,
-    "assets": ["**/*.json"],
-    "watchAssets": true
+    "deleteOutDir": true
   },
   "generateOptions": {
     "spec": false

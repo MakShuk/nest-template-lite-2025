@@ -7,13 +7,14 @@ services:
       - path: ./envs/.env.production
         required: false
     ports:
-      - "3424:3424"
+      - "${PORT:-3424}:${PORT:-3424}"
     environment:
-      - PORT=3424
-      - NODE_ENV=production
-    labels:
-      app: nestjs
-      env: test
-      team: backend
-      service: nest-template-lite-2025
+      PORT: ${PORT:-3424}
+      NODE_ENV: production
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped
